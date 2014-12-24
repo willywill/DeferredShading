@@ -21,14 +21,6 @@ float3 Lambert(float NdotL, float3 Albedo, float3 LightColor, float3 LightIntens
 	return (max(0.0, NdotL) * Albedo) * LightColor * LightIntensity;
 }
 
-float3 Diffuse_Burley( float3 DiffuseColor, float Roughness, float NoV, float NoL, float VoH )
-{
-	float FD90 = 0.5 + 2 * VoH * VoH * Roughness;
-	float FdV = 1 + (FD90 - 1) * exp2( (-5.55473 * NoV - 6.98316) * NoV );
-	float FdL = 1 + (FD90 - 1) * exp2( (-5.55473 * NoL - 6.98316) * NoL );
-	return DiffuseColor / PI * FdV * FdL;
-}
-
 float3 DiffuseBurley(float NdotL, float NdotV, float HdotV, float3 Albedo, float3 LightColor, float3 LightIntensity, float Roughness)
 {
 	float3 diff = (NdotL * Albedo) * LightColor * LightIntensity;
