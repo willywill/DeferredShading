@@ -42,6 +42,20 @@
 			{
 				return (2.0f * _ProjectionParams.y) / (_ProjectionParams.z + _ProjectionParams.y - depth * (_ProjectionParams.z - _ProjectionParams.y));
 			}
+			
+			float3 ComputeSkyGradient(float depth, float3 worldPos, float3 skyColor, float3 horizonColor)
+			{
+				if(depth > 0.99)
+				{
+					float curve = 4.0;
+					float gradient = pow(worldPos.y * 0.5 + 0.5, curve);
+					float3 gradient3 = float3(gradient, gradient, gradient);
+					float3 sky = lerp(horizonColor, skyColor, gradient3);
+					return sky;
+				}
+				
+				return 0.0;
+			}
  
             float4 CalculateLighting ( v2f i ) : COLOR
             {   
@@ -71,8 +85,10 @@
 				float3 skycol = float3(0.2, 0.46, 0.88);
 				float3 groundcol = float3(0.85, 0.57, 0.325);
 				
+				float3 sky = ComputeSkyGradient(Material.Depth, i.worldPos, skycol, groundcol);
+				
 				float gradient = Material.Normal.y * 0.5 + 0.5;
-				float3 ambientColor = lerp(groundcol, skycol, gradient);
+				float3 ambientColor = lerp(groundcol, skycol, gradient) * 0.5;
 				
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				
@@ -83,7 +99,7 @@
 				
 				float roughness = 0.64875;
 				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness, ao.x);
-				res.xyz = saturate(brdf) + ambient;
+				res.xyz = saturate(brdf) + ambient + sky;
 				res.w = 1.0;
 								
                 return res;
