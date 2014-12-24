@@ -9,9 +9,16 @@ Features
 ==============
 
 ► Tiled Deferred Renderer
+----------------
 ► Specular Occlusion
+----------------
 ► Screen-Space Directional Occlusion
-► Physically-based Materials
-► Physically-based Sky
+----------------
+► Physically-Based Materials
+----------------
+► Physically-Based Sky
+----------------
 ► Debugging Tools
+----------------
 ► Post-Processing
+----------------
