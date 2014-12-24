@@ -1,2 +1,0 @@
-4.6.0b20:1.9.2.0
-E:/Unity 4.6/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.0/UnityEngine.UI.dll
