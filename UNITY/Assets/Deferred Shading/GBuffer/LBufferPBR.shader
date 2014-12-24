@@ -53,7 +53,7 @@
 					float gradient = pow(worldPos.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return sky;
+					return sky * 0.75;
 				}
 				
 				return 0.0;
