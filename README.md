@@ -3,7 +3,7 @@ DeferredShading
 
 A DX11 Tiled Deferred Shading Renderer in Unity3D
 
-![alt tag](http://i.imgur.com/KJdYkwd.png)
+![alt tag](http://i.imgur.com/bCWJo6N.png)
 
 Features
 ==============
