@@ -70,7 +70,7 @@
 				
 				float roughness = 0.8;
 				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness);
-				res.xyz = max(0.0, brdf) + ambient;
+				res.xyz = brdf + ambient;
 				res.w = 1.0;
 								
                 return res;

@@ -84,7 +84,7 @@ SurfaceParams PBR(float3 N, float3 L, float3 V, float3 H, float R)
 
 float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float NdotH, float A, float3 cLight, float iLight, float3 Albedo)
 {
-	float3 diffuse = DiffuseBurley(NdotL, NdotV, HdotV, Albedo, cLight, iLight, (1.0 - R) );
+	float3 diffuse = DiffuseBurley(NdotL, NdotV, HdotV, Albedo, cLight, iLight, (1.0 - R) ) * cLight;
 
 	float specF = FresnelSchlick(HdotV, F0);
 	float specG = GGXVisibility(NdotL, NdotV, A);
