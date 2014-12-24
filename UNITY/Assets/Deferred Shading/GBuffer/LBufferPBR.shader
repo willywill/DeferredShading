@@ -18,6 +18,8 @@
 			uniform sampler2D _Jitter;
             uniform float4 _LightDirection;
 			uniform float4 _LightColor;
+			uniform float4 _SkyColor;
+			uniform float4 _GroundColor;
 			uniform float _LightIntensity;
 			uniform float4x4 _InverseProj;
 
@@ -47,7 +49,7 @@
 			{
 				if(depth > 0.99)
 				{
-					float curve = 4.0;
+					float curve = 2.0;
 					float gradient = pow(worldPos.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
@@ -82,13 +84,10 @@
 				
 				float4 res;	
 				
-				float3 skycol = float3(0.2, 0.46, 0.88);
-				float3 groundcol = float3(0.85, 0.57, 0.325);
-				
-				float3 sky = ComputeSkyGradient(Material.Depth, i.worldPos, skycol, groundcol);
+				float3 sky = ComputeSkyGradient(Material.Depth, i.worldPos, _SkyColor, _GroundColor);
 				
 				float gradient = Material.Normal.y * 0.5 + 0.5;
-				float3 ambientColor = lerp(groundcol, skycol, gradient) * 0.5;
+				float3 ambientColor = lerp(_GroundColor, _SkyColor, gradient) * 0.5;
 				
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				

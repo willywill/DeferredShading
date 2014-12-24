@@ -12,6 +12,8 @@ public class DeferredShading : MonoBehaviour
 	public Light MainLight;
 	public float LightIntensity = 1.0f;
 	public Color LightColor = Color.white;
+	public Color SkyColor = Color.blue;
+	public Color GroundColor = Color.white;
 	public Texture2D JitterTex;
 	private RenderBuffer[] colorBuffers;
 	private RenderBuffer depthBuffer;
@@ -88,6 +90,8 @@ public class DeferredShading : MonoBehaviour
 		MainLight.transform.eulerAngles = new Vector3(MainLight.transform.eulerAngles.x, MainLight.transform.eulerAngles.y * -1.0f, MainLight.transform.eulerAngles.z);
 		DirectionalLightMaterial.SetFloat("_LightIntensity", LightIntensity);
 		DirectionalLightMaterial.SetColor("_LightColor", LightColor);
+		DirectionalLightMaterial.SetColor("_SkyColor", SkyColor);
+		DirectionalLightMaterial.SetColor("_GroundColor", GroundColor);
 		DirectionalLightMaterial.SetVector("_LightDirection", MainLight.transform.forward * 1.0f);
 		DirectionalLightMaterial.SetTexture("_MainTex", RTs[0]);
 		DirectionalLightMaterial.SetTexture("_NormalTexture", RTs[1]);
