@@ -12,6 +12,7 @@ public class DeferredShading : MonoBehaviour
 	public Light MainLight;
 	public float LightIntensity = 1.0f;
 	public Color LightColor = Color.white;
+	public Texture2D JitterTex;
 	private RenderBuffer[] colorBuffers;
 	private RenderBuffer depthBuffer;
 	private Material DirectionalLightMaterial;
@@ -91,6 +92,7 @@ public class DeferredShading : MonoBehaviour
 		DirectionalLightMaterial.SetTexture("_MainTex", RTs[0]);
 		DirectionalLightMaterial.SetTexture("_NormalTexture", RTs[1]);
 		DirectionalLightMaterial.SetTexture("_DepthTexture", RTs[1]);
+		DirectionalLightMaterial.SetTexture("_Jitter", JitterTex);
 		DirectionalLightMaterial.SetMatrix("_InverseProj", renderingCamera.projectionMatrix.inverse);
 		Graphics.Blit(Input, Output, DirectionalLightMaterial);
 	}

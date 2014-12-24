@@ -3,9 +3,9 @@
 
 #define QUALITYBOOST 1
 #define Radius 0.2875
-#define Intensity 5.2575
-#define Distance 0.5
-#define Bias 0.475
+#define Intensity 1.7575
+#define Distance 2.5
+#define Bias 0.375
 
 float3 ViewSpacePosition(float2 coords, sampler2D depthTex, float4x4 InverseProj)
 {
@@ -24,7 +24,7 @@ float AO(float2 coords, float2 uv, float3 p, float3 n, sampler2D depth, float4x4
 	return  f * Intensity * max(0.0, (dot(n, v) - Bias) / (1.0 - Bias));
 }
 
-float SSAO(float2 uv, float3 N, sampler2D depthTex, float4x4 inverseProj)
+float SSAO(float2 uv, float3 N, sampler2D depthTex, sampler2D jitter, float4x4 inverseProj)
 {
 
 	const float2 Kernel[4] = { float2(1.0, 0.0), float2(-1.0, 0.0), float2(0.0, 1.0), float2(0.0, -1.0) };
@@ -34,12 +34,13 @@ float SSAO(float2 uv, float3 N, sampler2D depthTex, float4x4 inverseProj)
 	
 	float ao = 0.0f;
 	float radius = Radius / position.z;
+	float2 random = normalize(tex2D(jitter, _ScreenParams.xy * uv / 1024.0).rg * 2.0 - 1.0);
 	
 	for (int j = 0; j < 4 * QUALITYBOOST; j++)
 	{
 		float2 coord1;
 
-		coord1 = Kernel[j] * radius;
+		coord1 = reflect(Kernel[j], random) * radius;
 		float2 coord2 = coord1 * 0.707;
 		coord2 = float2(coord2.x - coord2.y, coord2.x + coord2.y);
 

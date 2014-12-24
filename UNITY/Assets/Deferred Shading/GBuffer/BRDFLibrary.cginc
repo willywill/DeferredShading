@@ -47,9 +47,10 @@ float GGXTrowbridgeReitz(float NdotH, float alpha)
 	return alpha / (PI * pow(NdotH * NdotH * (alpha - 1) + 1, 2.0f));
 }
 
-float SpecularOcclusion(float NdotV, float AO)
+float SpecularOcclusion(float NdotV, float AO, float alpha)
 {
-	return saturate((NdotV + AO * NdotV + AO) - 1.0 + AO );
+	float specAO = saturate((NdotV + AO) * (1.0 - alpha) - 1.0 + AO );
+	return lerp(0.0, specAO, 0.999);
 }
 
 float SunSpot(float3 vec1, float3 vec2, float iLight)
@@ -86,7 +87,7 @@ float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float Ndot
 	float specF = FresnelSchlick(HdotV, F0);
 	float specG = GGXVisibility(NdotL, NdotV, A);
 	float specD = GGXTrowbridgeReitz(NdotH, A);
-	float specAO = SpecularOcclusion(NdotV, AO);
+	float specAO = SpecularOcclusion(NdotV, AO, A);
 	float3 specular = ((specF * specG * specD * specAO) * NdotL * cLight);
 	
 	diffuse *= (1.0 - specF);

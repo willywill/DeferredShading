@@ -15,6 +15,7 @@
             uniform sampler2D _NormalTexture;
             uniform sampler2D _DepthTexture;
 			uniform sampler2D _CameraDepthTexture;
+			uniform sampler2D _Jitter;
             uniform float4 _LightDirection;
 			uniform float4 _LightColor;
 			uniform float _LightIntensity;
@@ -70,7 +71,7 @@
 				float3 up = float3(0.0,1.0,0.0);
 				float3 skycol = float3(0.2, 0.46, 0.88);
 				float3 skyLighting = dot( Material.Normal.rgb * 0.485 + 0.08, up ) * Material.Albedo.rgb * (skycol) * 0.311;
-				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _InverseProj);
+				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				float3 ambient = ao * skyLighting;
 				float roughness = 0.64875;
 				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness, ao.x);
