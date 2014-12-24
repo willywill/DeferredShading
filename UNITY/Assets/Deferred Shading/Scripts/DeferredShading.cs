@@ -21,6 +21,11 @@ public class DeferredShading : MonoBehaviour
 	{
 		originalCamera = camera;
 	}
+	
+	void Start()
+	{
+		
+	}
 
 	void OnRenderImage(RenderTexture source, RenderTexture destination) 
 	{
@@ -85,7 +90,7 @@ public class DeferredShading : MonoBehaviour
 	void ReformCameras()
 	{
 		renderingCamera = new GameObject("RenderingCamera").AddComponent<Camera>();
-		
+		renderingCamera.depthTextureMode |= DepthTextureMode.Depth;
 		renderingCamera.enabled = false;
 		
 		renderingCamera.transform.parent = transform;

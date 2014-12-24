@@ -2,10 +2,10 @@
 #define AMBIENTOCCLUSION_INCLUDED
 
 #define QUALITYBOOST 1
-#define Radius 0.005
-#define Intensity 2.00
+#define Radius 0.2875
+#define Intensity 4.50
 #define Distance 0.5
-#define Bias 0.5
+#define Bias 0.4
 
 float3 ViewSpacePosition(float2 coords, sampler2D depthTex, float4x4 InverseProj)
 {
