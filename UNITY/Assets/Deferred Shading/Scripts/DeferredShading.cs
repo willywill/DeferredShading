@@ -10,7 +10,6 @@ public class DeferredShading : MonoBehaviour
 	public Shader GBufferShader;
 	public Shader DirectionalLightShader;
 	public Light MainLight;
-	[Range(0, 10)]
 	public float LightIntensity = 1.0f;
 	public Color LightColor = Color.white;
 	private RenderBuffer[] colorBuffers;

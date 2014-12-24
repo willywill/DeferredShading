@@ -1,4 +1,4 @@
-﻿Shader "Hidden/L-Buffer" 
+﻿Shader "Hidden/L-BufferPhysical" 
 {
     Properties 
     {
@@ -59,36 +59,21 @@
 				//Get the light direction
 				float3 lightDir = -normalize(_LightDirection.xyz);
 				
-				float4 res;
-				
 				float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
-				float3 halfDir = (lightDir - viewDir);
+				float3 halfDir = (lightDir - viewDir);	
 				
-				float roughness = 1.0;
+				float4 res;	
 				
-				//res.xyz = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness);
-				//res.w = 1.0;
+				float3 up = float3(0.0,1.0,0.0);
+				float3 skycol = float3(0.35, 0.5, 0.7);
+				float3 ambient = dot( Material.Normal.rgb * 0.5 + 0.25, up ) * Material.Albedo.rgb * (skycol) * 0.5;
 				
-                //float3 diffuse =  ((dot( Material.Normal.rgb, lightDir) * Material.Albedo.rgb) * _LightColor) * _LightIntensity;
-                
-                
-				//float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
-				//float3 halfDir = (lightDir - viewDir);
-				
-				//float3 reflection = normalize( reflect(lightDir, Material.Normal.rgb) );
-				//float3 specular = (pow(dot(reflection, viewDir), 50.0) * _LightColor) * 5.0f;
-				//float3 skycol = pow(float3(0.35, 0.5, 0.7), 1.0);
-				//float3 up = float3(0.0,1.0,0.0);
-				//float3 ambient1 = dot( Material.Normal.rgb * 0.5 + 0.25, up ) * Material.Albedo.rgb * (skycol);
-				//float3 ambient2 = dot( Material.Normal.rgb * 0.5 + 0.25, -up ) * Material.Albedo.rgb * (1.0 - skycol) * 0.5;
-				//ambient1 = max(0.0, ambient1);
-				//ambient2 = max(0.0, ambient2);
-				//diffuse = max(0.0, diffuse) * _LightColor;
-                //If we return this, we will see diffuse + textures
-				return float4(Material.Depth, Material.Depth, Material.Depth, 1.0);
-				
-				
-               // return res;
+				float roughness = 0.5;
+				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness);
+				res.xyz = max(0.0, brdf) + ambient;
+				res.w = 1.0;
+								
+                return res;
             }
          
             ENDCG
