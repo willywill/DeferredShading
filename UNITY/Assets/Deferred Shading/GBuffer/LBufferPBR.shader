@@ -65,8 +65,11 @@
 				float4 res;	
 				
 				float3 up = float3(0.0,1.0,0.0);
-				float3 skycol = float3(0.35, 0.5, 0.7);
-				float3 ambient = dot( Material.Normal.rgb * 0.485 + 0.008, up ) * Material.Albedo.rgb * (skycol) * 0.311;
+				float3 skycol = float3(0.2, 0.46, 0.88);
+				float3 gcol = float3(1.5, 1.5, 0.8);
+				float3 a1 = dot( Material.Normal.rgb * 0.485 + 0.08, up ) * Material.Albedo.rgb * (skycol) * 0.311;
+				float3 a2 = dot( Material.Normal.rgb * 0.485 + 0.008, -up ) * Material.Albedo.rgb * (gcol) * 0.311;
+				float3 ambient = (a1);
 				
 				float roughness = 0.575;
 				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness);
