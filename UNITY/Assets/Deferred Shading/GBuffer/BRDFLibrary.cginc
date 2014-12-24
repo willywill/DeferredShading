@@ -47,6 +47,11 @@ float GGXTrowbridgeReitz(float NdotH, float alpha)
 	return alpha / (PI * pow(NdotH * NdotH * (alpha - 1) + 1, 2.0f));
 }
 
+float SpecularOcclusion(float NdotV, float AO)
+{
+	return saturate((NdotV + AO * NdotV + AO) - 1.0 + AO );
+}
+
 float SunSpot(float3 vec1, float3 vec2, float iLight)
 {
 	float3 delta = vec1 - vec2;
@@ -74,14 +79,15 @@ SurfaceParams PBR(float3 N, float3 L, float3 V, float3 H, float R)
 
 }
 
-float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float NdotH, float A, float3 cLight, float iLight, float3 Albedo)
+float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float NdotH, float A, float3 cLight, float iLight, float3 Albedo, float AO)
 {
 	float3 diffuse = DiffuseBurley(NdotL, NdotV, HdotV, Albedo, cLight, iLight, (1.0 - R) );
 
 	float specF = FresnelSchlick(HdotV, F0);
 	float specG = GGXVisibility(NdotL, NdotV, A);
 	float specD = GGXTrowbridgeReitz(NdotH, A);
-	float3 specular = ((specF * specG * specD * NdotL) * cLight);
+	float specAO = SpecularOcclusion(NdotV, AO);
+	float3 specular = ((specF * specG * specD * specAO) * NdotL * cLight);
 	
 	diffuse *= (1.0 - specF);
 	
@@ -89,11 +95,11 @@ float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float Ndot
 	return brdf;
 }
 
-float3 CalculateBRDF(float3 N, float3 L, float3 V, float3 H, float3 cLight, float iLight, float3 Albedo, float R)
+float3 CalculateBRDF(float3 N, float3 L, float3 V, float3 H, float3 cLight, float iLight, float3 Albedo, float R, float AO)
 {
 	SurfaceParams Surface = PBR(N, L, V, H, R);
 
-	float3 final = BRDF(Surface.HdotV, Surface.F0, Surface.NdotL, Surface.NdotV, Surface.Roughness, Surface.NdotH, Surface.Alpha, cLight, iLight, Albedo);
+	float3 final = BRDF(Surface.HdotV, Surface.F0, Surface.NdotL, Surface.NdotV, Surface.Roughness, Surface.NdotH, Surface.Alpha, cLight, iLight, Albedo, AO);
 
 	return final;
 }

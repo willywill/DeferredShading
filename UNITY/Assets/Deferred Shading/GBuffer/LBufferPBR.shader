@@ -73,7 +73,7 @@
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _InverseProj);
 				float3 ambient = ao * skyLighting;
 				float roughness = 0.64875;
-				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness);
+				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness, ao.x);
 				res.xyz = saturate(brdf) + ambient;
 				res.w = 1.0;
 								

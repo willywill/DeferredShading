@@ -5,7 +5,7 @@
 #define Radius 0.2875
 #define Intensity 5.2575
 #define Distance 0.5
-#define Bias 0.4
+#define Bias 0.475
 
 float3 ViewSpacePosition(float2 coords, sampler2D depthTex, float4x4 InverseProj)
 {
