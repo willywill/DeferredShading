@@ -16,6 +16,7 @@ public class DeferredShading : MonoBehaviour
 	private RenderBuffer depthBuffer;
 	private Material DirectionalLightMaterial;
 	private Material GBufferMat;
+	public bool ShowRTs = false; 
 	
 	void Awake()
 	{
@@ -71,7 +72,14 @@ public class DeferredShading : MonoBehaviour
 	
 	void OnGUI()
 	{
-		//GUI.DrawTexture(new Rect(0, 0, RTs[0].width, RTs[0].height), RTs[0], ScaleMode.StretchToFill, false);
+		if(ShowRTs)
+		{
+			Vector2 size = new Vector2 (480f, 240f);
+			float margin = 20;
+			GUI.DrawTexture (new Rect (margin, Screen.height - (size.y + margin), size.x, size.y), RTs[0], ScaleMode.StretchToFill, false, 1);
+			GUI.DrawTexture (new Rect (margin + 600, Screen.height - (size.y + margin), size.x, size.y), RTs[1], ScaleMode.StretchToFill, false, 1);
+		}
+		
 	}
 	
 	public void DirectionalLighting (RenderTexture Input, RenderTexture Output)
