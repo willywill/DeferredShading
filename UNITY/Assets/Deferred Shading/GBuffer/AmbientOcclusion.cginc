@@ -3,7 +3,7 @@
 
 #define QUALITYBOOST 1
 #define Radius 0.2875
-#define Intensity 1.7575
+#define Intensity 1.575
 #define Distance 2.5
 #define Bias 0.375
 

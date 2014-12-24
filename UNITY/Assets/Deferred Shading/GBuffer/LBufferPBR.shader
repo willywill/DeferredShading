@@ -70,7 +70,8 @@
 				
 				float3 up = float3(0.0,1.0,0.0);
 				float3 skycol = float3(0.2, 0.46, 0.88);
-				float3 skyLighting = dot( Material.Normal.rgb * 0.485 + 0.08, up ) * Material.Albedo.rgb * (skycol) * 0.311;
+				float3 skyVector = dot( Material.Normal.rgb * 0.485 + 0.08, up ) * Material.Albedo.rgb;
+				float3 skyLighting = skyVector * (skycol) * 0.275;
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				float3 ambient = ao * ao * ao * skyLighting;
 				float roughness = 0.64875;

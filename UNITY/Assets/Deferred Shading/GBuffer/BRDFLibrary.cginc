@@ -23,11 +23,11 @@ float3 Lambert(float NdotL, float3 Albedo, float3 LightColor, float3 LightIntens
 
 float3 DiffuseBurley(float NdotL, float NdotV, float HdotV, float3 Albedo, float3 LightColor, float3 LightIntensity, float Roughness)
 {
-	float3 diff = (NdotL * Albedo) * LightColor * LightIntensity;
+	float3 diff = (NdotL * Albedo);
 	float FD90 = 0.5 + 2.0 * HdotV * HdotV * Roughness; 
 	float FdotV = 1 + (FD90 - 1) * exp2( (-5.55473 * NdotV - 6.98316) * NdotV );
 	float FdotL = 1 + (FD90 - 1) * exp2( (-5.55473 * NdotL - 6.98316) * NdotL );
-	return diff * FdotV * FdotL;
+	return diff * FdotV * FdotL * LightColor * (1.0 - LightIntensity);
 }
 
 float FresnelSchlick( float HdotV, float F0 )
@@ -73,7 +73,7 @@ SurfaceParams PBR(float3 N, float3 L, float3 V, float3 H, float R)
 	
 	Surface.Roughness = R;
 	Surface.Alpha = R * R;
-	Surface.F0 = 0.98316;
+	Surface.F0 = 0.5;
 	Surface.SpecularAlbedo = 1.0f;
 	
 	return Surface;
