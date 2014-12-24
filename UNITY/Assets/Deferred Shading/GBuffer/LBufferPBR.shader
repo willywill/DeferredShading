@@ -68,24 +68,33 @@
 			
 			float3 ComputeFogGradient(float3 dir, float3 horizonColor, float3 skyColor, float depth)
 			{
-				float3 sky;
-			
-				if(depth < 0.99)
+				if(depth < 0.9)
 				{
 					float curve = 0.0001;
 					float gradient = pow(dir.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
-					sky = lerp(horizonColor, skyColor, gradient3);
+					float3 sky = lerp(horizonColor, skyColor, gradient3);
+					return sky;
 				}
 				
-				return sky * 0.75;
+				return 0.0;
 			}
 			
 			float3 CalculateFogDensity(float3 col, float3 skyColor, float3 groundColor, float rayDist, float fogDensity, float depth)
 			{
 				float density = exp2( rayDist * -fogDensity);
 				float3 fog = ComputeFogGradient(rayDist, groundColor, skyColor, depth);
-				col = lerp(fog, col, density);
+				
+				if(depth < 0.9)
+				{
+					col = lerp(fog, col, density);
+				}
+				
+				else
+				{
+					col = col;
+				}
+				
 				return col;
 			}
  
@@ -133,7 +142,7 @@
 				
 				float3 final = saturate(brdf) + ambient;
 				
-				float fogDensity = 0.1;
+				float fogDensity = 0.03;
 				final = CalculateFogDensity(final, _SkyColor, _GroundColor, rayDir, fogDensity, Material.Depth);
 				
 				res.xyz = final + sky;
