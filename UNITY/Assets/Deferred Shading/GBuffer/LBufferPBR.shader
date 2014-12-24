@@ -87,7 +87,7 @@
 				float3 sky = ComputeSkyGradient(Material.Depth, i.worldPos, _SkyColor, _GroundColor);
 				
 				float gradient = Material.Normal.y * 0.5 + 0.5;
-				float3 ambientColor = lerp(_GroundColor, _SkyColor, gradient) * 0.5;
+				float3 ambientColor = lerp(_GroundColor, _SkyColor, gradient);
 				
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				
