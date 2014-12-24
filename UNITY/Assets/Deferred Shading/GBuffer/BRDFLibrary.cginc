@@ -49,7 +49,7 @@ float GGXTrowbridgeReitz(float NdotH, float alpha)
 
 float SpecularOcclusion(float NdotV, float AO, float alpha)
 {
-	float specAO = saturate((NdotV + AO) * (1.0 - alpha) - 1.0 + AO );
+	float specAO = saturate((NdotV + AO) * (NdotV + AO) * (1.0 - alpha) - 1.0 + AO );
 	return lerp(0.0, specAO, 0.999);
 }
 
