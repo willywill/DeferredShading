@@ -24,18 +24,16 @@ inline float3 DecodeSphereNormals( float2 enc )
     return n;
 }
 
-inline float4 EncodeDepth(float x)
+inline float2 EncodeDepth(float x)
 {
-	float4 bits = float4(256.0 * 256.0 * 256.0, 256.0 * 256.0, 256.0, 1.0);
-	float4 mask = float4(0.0, 1.0/256.0, 1.0/256.0, 1.0/256.0);
-	float4 encode = frac(x * bits);
-	encode -= encode.xxyz * mask;
+	float bits = 256.0;
+	float2 encode = frac( float2(x, x * bits));
 	return encode;
 }
 
-inline float DecodeDepth(float4 x)
+inline float DecodeDepth(float2 x)
 {
-	float4 bits = float4(1.0/(256.0*256.0*256.0), 1.0/(256.0*256.0), 1.0/256.0, 1.0);
+	float2 bits = float2(1.0, 1.0/256.0);
 	float depth = dot(x, bits);
 	return depth;
 }

@@ -78,6 +78,7 @@ public class DeferredShading : MonoBehaviour
 		DirectionalLightMaterial.SetTexture("_MainTex", RTs[0]);
 		DirectionalLightMaterial.SetTexture("_NormalTexture", RTs[1]);
 		DirectionalLightMaterial.SetTexture("_DepthTexture", RTs[1]);
+		DirectionalLightMaterial.SetMatrix("_InverseProj", renderingCamera.projectionMatrix.inverse);
 		Graphics.Blit(Input, Output, DirectionalLightMaterial);
 	}
 

@@ -91,9 +91,9 @@ float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float Ndot
 	float specD = GGXTrowbridgeReitz(NdotH, A);
 	float3 specular = ((specF * specG * specD * NdotL) * cLight);
 	
-	diffuse *= (1.0 - specF);
+	//diffuse *= (1.0 - specF);
 	
-	float3 brdf = specular + diffuse * (1.0 / PI);
+	float3 brdf = diffuse * (1.0 / PI);
 	return brdf;
 }
 

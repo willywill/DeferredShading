@@ -22,7 +22,7 @@ SurfaceProperties UnpackGBuffer(float2 coords, sampler2D depth, sampler2D albedo
 {
 	SurfaceProperties output;
 	
- 	output.LinearDepth = tex2D(depth, coords).z;
+ 	output.LinearDepth = DecodeDepth(tex2D(depth, coords).ba);
  	output.Color = tex2D(albedo, coords);
  	output.Normal = DecodeSphereNormals(tex2D(normals, coords).rg) * 0.5f + 0.25f;
  	

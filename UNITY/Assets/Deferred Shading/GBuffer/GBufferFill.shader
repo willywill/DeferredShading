@@ -43,7 +43,7 @@
                 float4 pos : SV_POSITION;
                 float2 tex : TEXCOORD1;
                 float3 normal : TEXCOORD2;
-                float2 depth : TEXCOORD3;
+                float depth : TEXCOORD3;
             };
 
             struct PixelOutput
@@ -63,13 +63,12 @@
                 output.normal = COMPUTE_VIEW_NORMAL;
                 output.tex = TRANSFORM_UV(0);
                 output.pos = pos;
-                output.depth.x = pos.z;
-				output.depth.y = pos.w;
+                output.depth = (pos.z / pos.w);
 
                 return output;
             }
             
-            PixelOutput PackGBuffer(float roughness, float MatID, float2 coords, float3 normal, float2 depth, out PixelOutput output)
+            PixelOutput PackGBuffer(float roughness, float MatID, float2 coords, float3 normal, float depth, out PixelOutput output)
             {
                 // ---------------------BUFFER I---------------------
                 //Albedo
@@ -81,7 +80,7 @@
                 //Normals
                 output.Normal.rg = EncodeSphereNormals( normal );
 				
-                output.Normal.ba = depth.x / depth.y;
+                output.Normal.ba = EncodeDepth(depth);
                 // ---------------------BUFFER III---------------------
                 //Colored Spec
                 float3 Specular = tex2D( _SpecColor, coords );
@@ -103,7 +102,7 @@
                 
                 float3 normal = input.normal;
                 float2 coords = input.tex;
-                float2 depth = input.depth;
+                float depth = input.depth;
                 
                 return PackGBuffer(roughness, MatID, coords, normal, depth, output);
             }
