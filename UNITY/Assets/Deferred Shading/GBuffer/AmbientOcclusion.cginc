@@ -26,8 +26,18 @@ float AO(float2 coords, float2 uv, float3 p, float3 n, sampler2D depth, float4x4
 
 float SSAO(float2 uv, float3 N, sampler2D depthTex, sampler2D jitter, float4x4 inverseProj)
 {
-
+	#if QUALITYBOOST == 1
 	const float2 Kernel[4] = { float2(1.0, 0.0), float2(-1.0, 0.0), float2(0.0, 1.0), float2(0.0, -1.0) };
+	#endif
+	
+	#if QUALITYBOOST == 2
+	const float2 Kernel[8] = {
+	float2(1.0, 0.0), float2(-1.0, 0.0),
+	float2(0.0, 1.0), float2(0.0, -1.0),
+	float2(1.0, 1.0), float2(-1.0, 1.0),
+	float2(-1.0, -1.0), float2(1.0, -1.0)
+	};
+	#endif
 	
 	float3 position = ViewSpacePosition(uv, depthTex, inverseProj);
 	float3 normal = N;
