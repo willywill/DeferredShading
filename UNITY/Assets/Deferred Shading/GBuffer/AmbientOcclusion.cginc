@@ -1,7 +1,9 @@
 #ifndef AMBIENTOCCLUSION_INCLUDED
 #define AMBIENTOCCLUSION_INCLUDED
 
-#define QUALITYBOOST 1
+// Can either be 1 or 2 but nothing else.. yet
+#define QUALITYBOOST 2
+
 #define Radius 0.175
 #define Intensity 0.75
 #define Distance 0.5

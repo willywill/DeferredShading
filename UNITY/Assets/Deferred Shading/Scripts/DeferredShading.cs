@@ -80,7 +80,7 @@ public class DeferredShading : MonoBehaviour
 			Vector2 size = new Vector2 (480f, 240f);
 			float margin = 20;
 			GUI.DrawTexture (new Rect (margin, Screen.height - (size.y + margin), size.x, size.y), RTs[0], ScaleMode.StretchToFill, false, 1);
-			GUI.DrawTexture (new Rect (margin + 600, Screen.height - (size.y + margin), size.x, size.y), RTs[1], ScaleMode.StretchToFill, false, 1);
+			GUI.DrawTexture (new Rect (margin + 500, Screen.height - (size.y + margin), size.x, size.y), RTs[1], ScaleMode.StretchToFill, false, 1);
 		}
 		
 	}
@@ -98,6 +98,8 @@ public class DeferredShading : MonoBehaviour
 		DirectionalLightMaterial.SetTexture("_DepthTexture", RTs[1]);
 		DirectionalLightMaterial.SetTexture("_Jitter", JitterTex);
 		DirectionalLightMaterial.SetMatrix("_InverseProj", renderingCamera.projectionMatrix.inverse);
+		DirectionalLightMaterial.SetVector("_CameraWS", renderingCamera.transform.position);
+		FrustumCorners();
 		Graphics.Blit(Input, Output, DirectionalLightMaterial);
 	}
 
@@ -132,6 +134,51 @@ public class DeferredShading : MonoBehaviour
 		
 		colorBuffers = new RenderBuffer[] { RTs[0].colorBuffer, RTs[1].colorBuffer, RTs[2].colorBuffer };
 		depthBuffer = RTs[1].depthBuffer;
+	}
+	
+	public void FrustumCorners()
+	{
+		float CAMERA_NEAR = 0.5f;
+		float CAMERA_FAR = 50.0f;
+		float CAMERA_FOV = 60.0f;	
+		float CAMERA_ASPECT_RATIO = 1.333333f;
+
+		CAMERA_NEAR = renderingCamera.nearClipPlane;
+		CAMERA_FAR = renderingCamera.farClipPlane;
+		CAMERA_FOV = renderingCamera.fieldOfView;
+		CAMERA_ASPECT_RATIO = renderingCamera.aspect;
+		
+		Matrix4x4 frustumCorners = Matrix4x4.identity;
+		
+		float fovWHalf = CAMERA_FOV * 0.5f;
+		
+		Vector3 toRight = renderingCamera.transform.right * CAMERA_NEAR * Mathf.Tan (fovWHalf * Mathf.Deg2Rad) * CAMERA_ASPECT_RATIO;
+		Vector3 toTop = renderingCamera.transform.up * CAMERA_NEAR * Mathf.Tan (fovWHalf * Mathf.Deg2Rad);
+		
+		Vector3 topLeft = (renderingCamera.transform.forward * CAMERA_NEAR - toRight + toTop);
+		float CAMERA_SCALE = topLeft.magnitude * CAMERA_FAR/CAMERA_NEAR;	
+		
+		topLeft.Normalize();
+		topLeft *= CAMERA_SCALE;
+		
+		Vector3 topRight = (renderingCamera.transform.forward * CAMERA_NEAR + toRight + toTop);
+		topRight.Normalize();
+		topRight *= CAMERA_SCALE;
+		
+		Vector3 bottomRight = (renderingCamera.transform.forward * CAMERA_NEAR + toRight - toTop);
+		bottomRight.Normalize();
+		bottomRight *= CAMERA_SCALE;
+		
+		Vector3 bottomLeft = (renderingCamera.transform.forward * CAMERA_NEAR - toRight - toTop);
+		bottomLeft.Normalize();
+		bottomLeft *= CAMERA_SCALE;
+		
+		frustumCorners.SetRow (0, topLeft); 
+		frustumCorners.SetRow (1, topRight);		
+		frustumCorners.SetRow (2, bottomRight);
+		frustumCorners.SetRow (3, bottomLeft);
+		
+		DirectionalLightMaterial.SetMatrix ("_FrustumCornersWS", frustumCorners);
 	}
 
 	void OnDisable()
