@@ -52,7 +52,7 @@ float SSAO(float2 uv, float3 N, sampler2D depthTex, sampler2D jitter, float4x4 i
 	{
 		float2 coord1;
 
-		coord1 = reflect(Kernel[j], random) * radius;
+		coord1 = reflect(Kernel[j], random) * radius * random;
 		float2 coord2 = coord1 * 0.707;
 		coord2 = float2(coord2.x - coord2.y, coord2.x + coord2.y);
 

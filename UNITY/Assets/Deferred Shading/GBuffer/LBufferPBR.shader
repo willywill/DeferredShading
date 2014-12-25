@@ -1,9 +1,9 @@
-﻿Shader "Hidden/L-BufferPhysical" 
+﻿Shader "Hidden/L-Buffer-Physical" 
 {
     Properties 
     {
         _MainTex ("Albedo (sRGB)", 2D) = "black" {}
-    }
+    } 
 
             CGINCLUDE
             #include "UnityCG.cginc"
@@ -70,11 +70,11 @@
 			{
 				if(depth < 0.9)
 				{
-					float curve = 2.0;
+					float curve = 4.0;
 					float gradient = pow(dir.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return sky * 1.2;
+					return sky * 1.25;
 				}
 				
 				return 0.0;
@@ -84,7 +84,6 @@
 			{
 				float density = exp2( rayDist.y * -fogDensity);
 				float3 fog = ComputeFogGradient(rayDist, groundColor, skyColor, depth);
-				
 				if(depth < 0.9)
 				{
 					col = lerp(fog, col, density);
@@ -108,12 +107,21 @@
                 
                 //Grab the Albedo from the GBuffer
                 Material.Albedo.rgb = GBuffer.Color;
+				
                 
                 //Grab the Normals from the GBuffer
                 Material.Normal.rgb = GBuffer.Normal;
 				
 				//Grab the depth
 				Material.Depth = LinearDepth(GBuffer.LinearDepth);
+				
+				//Calculate subsurface scattering in both directions
+				//float3 sss = float3(0,0,0);
+				//float2 dir = float2(1.0, 0.0);
+				//sss += SSS(dir, i.uv, _CameraDepthTexture, _MainTex);
+				//dir = float2(0.0, 1.0);
+				//sss += SSS(dir, i.uv, _CameraDepthTexture, _MainTex);
+				//Material.Albedo.rgb = lerp(Material.Albedo.rgb, sss * 0.5, 1.0);
 				
 				//Get the light direction
 				float3 lightDir = -normalize(_LightDirection.xyz);
@@ -128,11 +136,11 @@
 				float gradient = Material.Normal.y * 0.5 + 0.5;
 				float3 ambientColor = lerp(_GroundColor, _SkyColor, gradient);
 				
-				float4 rayDir = Material.Depth * i.interpolatedRay + _CameraWS;
+				//float4 rayDir = Material.Depth * i.interpolatedRay + _CameraWS;
 				
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				
-				float3 ambientDiffuse = ao * ao * ao * ambientColor;
+				float3 ambientDiffuse = ao * ao * ao * ao * ao * ambientColor;
 				float3 ambientSpec = 0.0;
 				
 				float3 ambient = ambientDiffuse + ambientSpec;
@@ -142,8 +150,9 @@
 				
 				float3 final = saturate(brdf) + ambient;
 				
-				float fogDensity = 1.0;
-				final = CalculateFogDensity(final, _SkyColor, _GroundColor, i.worldPos, fogDensity, Material.Depth);
+				float fogDensity = 0.0;
+				if(fogDensity > 0.0)
+					final = CalculateFogDensity(final, _SkyColor, _GroundColor, i.worldPos, fogDensity, Material.Depth);
 				
 				res.xyz = final + sky;
 				res.w = 1.0;

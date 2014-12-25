@@ -23,7 +23,7 @@ float3 Lambert(float NdotL, float3 Albedo, float3 LightColor, float3 LightIntens
 
 float3 DiffuseBurley(float NdotL, float NdotV, float HdotV, float3 Albedo, float3 LightColor, float3 LightIntensity, float Roughness)
 {
-	float3 diff = (NdotL * Albedo);
+	float3 diff = NdotL * Albedo;
 	float FD90 = 0.5 + 2.0 * HdotV * HdotV * Roughness; 
 	float FdotV = 1 + (FD90 - 1) * exp2( (-5.55473 * NdotV - 6.98316) * NdotV );
 	float FdotL = 1 + (FD90 - 1) * exp2( (-5.55473 * NdotL - 6.98316) * NdotL );
@@ -83,7 +83,6 @@ SurfaceParams PBR(float3 N, float3 L, float3 V, float3 H, float R)
 float3 BRDF(float HdotV, float F0, float NdotL, float NdotV, float R, float NdotH, float A, float3 cLight, float iLight, float3 Albedo, float AO)
 {
 	float3 diffuse = DiffuseBurley(NdotL, NdotV, HdotV, Albedo, cLight, iLight, (1.0 - R) );
-
 	float specF = FresnelSchlick(HdotV, F0);
 	float specG = GGXVisibility(NdotL, NdotV, A);
 	float specD = GGXTrowbridgeReitz(NdotH, A);

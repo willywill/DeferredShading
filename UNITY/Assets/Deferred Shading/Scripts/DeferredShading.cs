@@ -77,10 +77,11 @@ public class DeferredShading : MonoBehaviour
 	{
 		if(ShowRTs)
 		{
-			Vector2 size = new Vector2 (480f, 240f);
+			Vector2 size = new Vector2 (240, 120);
 			float margin = 20;
 			GUI.DrawTexture (new Rect (margin, Screen.height - (size.y + margin), size.x, size.y), RTs[0], ScaleMode.StretchToFill, false, 1);
-			GUI.DrawTexture (new Rect (margin + 500, Screen.height - (size.y + margin), size.x, size.y), RTs[1], ScaleMode.StretchToFill, false, 1);
+			GUI.DrawTexture (new Rect (margin + margin + size.x, Screen.height - (size.y + margin), size.x, size.y), RTs[1], ScaleMode.StretchToFill, false, 1);
+			GUI.DrawTexture (new Rect (margin + margin + margin + size.x + size.x, Screen.height - (size.y + margin), size.x, size.y), RTs[2], ScaleMode.StretchToFill, false, 1);
 		}
 		
 	}
