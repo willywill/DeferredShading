@@ -60,7 +60,7 @@
 					float gradient = pow(worldPos.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return sky * 0.75;
+					return sky * 1.5;
 				}
 				
 				return 0.0;
@@ -68,13 +68,13 @@
 			
 			float3 ComputeFogGradient(float3 dir, float3 horizonColor, float3 skyColor, float depth)
 			{
-				if(depth < 0.9)
+				if(depth < 0.99)
 				{
-					float curve = 4.0;
+					float curve = 1.0;
 					float gradient = pow(dir.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return sky * 1.25;
+					return sky * 1.5;
 				}
 				
 				return 0.0;
@@ -82,7 +82,7 @@
 			
 			float3 CalculateFogDensity(float3 col, float3 skyColor, float3 groundColor, float3 rayDist, float fogDensity, float depth)
 			{
-				float density = exp2( rayDist.y * -fogDensity);
+				float density = exp2( rayDist.y * depth * -fogDensity);
 				float3 fog = ComputeFogGradient(rayDist, groundColor, skyColor, depth);
 				if(depth < 0.9)
 				{
@@ -124,7 +124,7 @@
 				//Material.Albedo.rgb = lerp(Material.Albedo.rgb, sss * 0.5, 1.0);
 				
 				//Get the light direction
-				float3 lightDir = -normalize(_LightDirection.xyz);
+				float3 lightDir = -normalize(_LightDirection);
 				
 				float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
 				float3 halfDir = (lightDir - viewDir);	
@@ -149,8 +149,8 @@
 				float3 brdf = CalculateBRDF(Material.Normal.rgb, lightDir, viewDir, halfDir, _LightColor, _LightIntensity, Material.Albedo.rgb, roughness, ao.x);
 				
 				float3 final = saturate(brdf) + ambient;
-				
-				float fogDensity = 0.0;
+				final *= Material.Albedo.rgb;
+				float fogDensity = 0.0025;
 				if(fogDensity > 0.0)
 					final = CalculateFogDensity(final, _SkyColor, _GroundColor, i.worldPos, fogDensity, Material.Depth);
 				
@@ -177,6 +177,7 @@
         
                 CGPROGRAM
                 #pragma target 3.0
+				#pragma glsl
                 #pragma vertex vert
                 #pragma fragment CalculateLighting
                 ENDCG

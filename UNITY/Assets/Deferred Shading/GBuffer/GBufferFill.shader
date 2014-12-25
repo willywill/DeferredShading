@@ -3,8 +3,8 @@
     {
         _MainTex ("Albedo (sRGB)", 2D) = "black" {}
         _NormalTexture ("Normal Map (sRGB)", 2D) = "gray" {}
-        _SpecColor ("Specular Color (sRGB)", 2D) = "black" {}
-        _Roughness ("Roughness (Linear)", 2D) = "black" {}
+        _SpecularColor ("Specular Color (sRGB)", 2D) = "blue" {}
+        _Roughness ("Roughness (Linear)", 2D) = "green" {}
         _DepthTexture ("Depth (Linear)", 2D) = "white" {}
     }
 
@@ -26,7 +26,7 @@
             #include "GBufferUtilities.cginc"
 
             uniform sampler2D _MainTex;
-            uniform sampler2D _SpecColor;
+            uniform sampler2D _SpecularColor;
             uniform sampler2D _Roughness;
             uniform sampler2D _NormalTexture;
             uniform sampler2D _DepthTexture;
@@ -83,7 +83,7 @@
                 output.Normal.ba = EncodeDepth(depth);
                 // ---------------------BUFFER III---------------------
                 //Colored Spec
-                float3 Specular = tex2D( _SpecColor, coords );
+                float3 Specular = tex2D( _SpecularColor, coords );
                 output.Spec.rgb = Specular;
                 // Roughness
                 float rough = tex2D(_Roughness, coords).x;
