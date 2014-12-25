@@ -5,9 +5,9 @@
 #define QUALITYBOOST 2
 
 #define Radius 0.175
-#define Intensity 2.85
+#define Intensity 1.275
 #define Distance 0.5
-#define Bias 0.375
+#define Bias 0.475
 
 float3 ViewSpacePosition(float2 coords, sampler2D depthTex, float4x4 InverseProj)
 {

@@ -52,38 +52,46 @@
 				return (2.0f * _ProjectionParams.y) / (_ProjectionParams.z + _ProjectionParams.y - depth * (_ProjectionParams.z - _ProjectionParams.y));
 			}
 			
-			float3 ComputeSkyGradient(float depth, float3 worldPos, float3 skyColor, float3 horizonColor)
+			float SchlickPhase(float cosTheta, float g)
+			{
+				float k = (1.55 * g) - (5.55 * (g * g * g));
+				return (1.0 / (4.0 * PI)) * ((1.0 - (k * k)) / ( pow( 1.0 + k * cosTheta, 2.0)));
+			}
+			
+			float3 ComputeSkyGradient(float depth, float cosTheta, float g, float3 worldPos, float3 skyColor, float3 horizonColor)
 			{
 				if(depth > 0.99)
 				{
 					float curve = 2.0;
 					float gradient = pow(worldPos.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
+					float3 sun = SchlickPhase(cosTheta, g) * _LightColor;
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return sky * 1.5;
+					return (sky + sun) * 1.2;
 				}
 				
 				return 0.0;
 			}
 			
-			float3 ComputeFogGradient(float3 dir, float3 horizonColor, float3 skyColor, float depth)
+			float3 ComputeFogGradient(float3 dir, float3 horizonColor, float3 skyColor, float depth, float cosTheta, float g)
 			{
 				if(depth < 0.99)
 				{
 					float curve = 1.0;
 					float gradient = pow(dir.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
+					float3 sun = SchlickPhase(cosTheta, g) * _LightColor; 
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return sky * 1.5;
+					return (sky + sun)  * 1.5;
 				}
 				
 				return 0.0;
 			}
 			
-			float3 CalculateFogDensity(float3 col, float3 skyColor, float3 groundColor, float3 rayDist, float fogDensity, float depth)
+			float3 CalculateFogDensity(float3 col, float cosTheta, float g, float3 skyColor, float3 groundColor, float3 rayDist, float3 worldPos, float fogDensity, float depth)
 			{
-				float density = exp2( rayDist.y * depth * -fogDensity);
-				float3 fog = ComputeFogGradient(rayDist, groundColor, skyColor, depth);
+				float density = exp( rayDist.y * -fogDensity);
+				float3 fog = ComputeFogGradient(worldPos, groundColor, skyColor, depth, cosTheta, g);
 				if(depth < 0.9)
 				{
 					col = lerp(fog, col, density);
@@ -124,19 +132,21 @@
 				//Material.Albedo.rgb = lerp(Material.Albedo.rgb, sss * 0.5, 1.0);
 				
 				//Get the light direction
-				float3 lightDir = -normalize(_LightDirection);
+				float3 lightDir = _LightDirection;
 				
 				float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPos);
 				float3 halfDir = (lightDir - viewDir);	
 				
 				float4 res;	
 				
-				float3 sky = ComputeSkyGradient(Material.Depth, i.worldPos, _SkyColor, _GroundColor);
+				float4 rayDir = Material.Depth * i.interpolatedRay;
+				float cosTheta = dot(rayDir, lightDir);
+				float g = 0.999f;
+				
+				float3 sky = ComputeSkyGradient(Material.Depth, cosTheta, g, i.worldPos, _SkyColor, _GroundColor);
 				
 				float gradient = Material.Normal.y * 0.5 + 0.5;
 				float3 ambientColor = lerp(_GroundColor, _SkyColor, gradient);
-				
-				//float4 rayDir = Material.Depth * i.interpolatedRay + _CameraWS;
 				
 				float3 ao = SSAO(i.uv, Material.Normal.rgb, _CameraDepthTexture, _Jitter, _InverseProj);
 				
@@ -150,9 +160,9 @@
 				
 				float3 final = saturate(brdf) + ambient;
 				final *= Material.Albedo.rgb;
-				float fogDensity = 0.0025;
+				float fogDensity = 0.1;
 				if(fogDensity > 0.0)
-					final = CalculateFogDensity(final, _SkyColor, _GroundColor, i.worldPos, fogDensity, Material.Depth);
+					final = CalculateFogDensity(final, cosTheta, g, _SkyColor, _GroundColor, rayDir, i.worldPos, fogDensity, Material.Depth);
 				
 				res.xyz = final + sky;
 				res.w = 1.0;

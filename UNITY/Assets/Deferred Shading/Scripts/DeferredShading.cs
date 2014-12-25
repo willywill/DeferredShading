@@ -36,10 +36,6 @@ public class DeferredShading : MonoBehaviour
 		if(!GBufferMat)
 		{
 			GBufferMat = new Material(GBufferShader);
-			//GBufferMat.SetTexture("_MainTex", RTs[0]);
-			//GBufferMat.SetTexture("_NormalTexture", RTs[1]);
-			//GBufferMat.SetTexture("_DepthTexture", RTs[1]);
-			//GBufferMat.SetTexture("_SpecularColor", RTs[2]);
 			
 			Shader.SetGlobalTexture("_MainTex", RTs[0]);
 			Shader.SetGlobalTexture("_NormalTexture", RTs[1]);
@@ -98,7 +94,7 @@ public class DeferredShading : MonoBehaviour
 		DirectionalLightMaterial.SetColor("_LightColor", LightColor);
 		DirectionalLightMaterial.SetColor("_SkyColor", SkyColor);
 		DirectionalLightMaterial.SetColor("_GroundColor", GroundColor);
-		DirectionalLightMaterial.SetVector("_LightDirection", renderer.localToWorldMatrix * MainLight.transform.forward);
+		DirectionalLightMaterial.SetVector("_LightDirection", MainLight.transform.forward);
 		DirectionalLightMaterial.SetTexture("_MainTex", RTs[0]);
 		DirectionalLightMaterial.SetTexture("_NormalTexture", RTs[1]);
 		DirectionalLightMaterial.SetTexture("_DepthTexture", RTs[1]);
