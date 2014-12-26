@@ -65,9 +65,8 @@
 					float curve = 2.0;
 					float gradient = pow(worldPos.y * 0.5 + 0.5, curve);
 					float3 gradient3 = float3(gradient, gradient, gradient);
-					float3 sun = SchlickPhase(cosTheta, g) * _LightColor;
 					float3 sky = lerp(horizonColor, skyColor, gradient3);
-					return (sky + sun) * 1.2;
+					return (sky) * 1.2;
 				}
 				
 				return 0.0;
@@ -160,7 +159,7 @@
 				
 				float3 final = saturate(brdf) + ambient;
 				final *= Material.Albedo.rgb;
-				float fogDensity = 0.1;
+				float fogDensity = 0.0;
 				if(fogDensity > 0.0)
 					final = CalculateFogDensity(final, cosTheta, g, _SkyColor, _GroundColor, rayDir, i.worldPos, fogDensity, Material.Depth);
 				

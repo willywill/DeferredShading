@@ -4,7 +4,7 @@
 // Can either be 1 or 2 but nothing else.. yet
 #define QUALITYBOOST 2
 
-#define Radius 0.175
+#define Radius 0.275
 #define Intensity 1.275
 #define Distance 0.5
 #define Bias 0.475
@@ -55,7 +55,7 @@ float SSAO(float2 uv, float3 N, sampler2D depthTex, sampler2D jitter, float4x4 i
 
 	float radius = Radius / position.z;
 	float2 random = normalize(tex2D(jitter, _ScreenParams.xy * uv / 1024.0).rg * 2.0 - 1.0);
-	//float2 random = Noise(uv);
+	//float2 random = Noise(uv * 7.5);
 	
 	for (int j = 0; j < 4 * QUALITYBOOST; j++)
 	{

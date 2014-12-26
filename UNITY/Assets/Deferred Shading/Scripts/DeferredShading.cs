@@ -33,8 +33,6 @@ public class DeferredShading : MonoBehaviour
 
 	void OnRenderImage(RenderTexture source, RenderTexture destination) 
 	{
-		if(!GBufferMat)
-		{
 			GBufferMat = new Material(GBufferShader);
 			
 			Shader.SetGlobalTexture("_MainTex", RTs[0]);
@@ -44,17 +42,11 @@ public class DeferredShading : MonoBehaviour
 
 			source = RTs[0];
 			
-			Graphics.Blit(RTs[0], destination, GBufferMat);
-			Graphics.Blit(RTs[1], destination, GBufferMat);
-			Graphics.Blit(RTs[2], destination, GBufferMat);
-			
-		}
-		
-		if(!DirectionalLightMaterial)
-		{
 			DirectionalLightMaterial = new Material(DirectionalLightShader);
 			DirectionalLighting(source, destination);
-		}
+			
+			GBufferMat = null;
+			DirectionalLightMaterial = null;
 	}
 
 	void OnEnable()
