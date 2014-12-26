@@ -4,7 +4,7 @@
 // Can either be 1 or 2 but nothing else.. yet
 #define QUALITYBOOST 2
 
-#define Radius 0.275
+#define Radius 0.175
 #define Intensity 1.275
 #define Distance 0.5
 #define Bias 0.475
