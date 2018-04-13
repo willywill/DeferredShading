@@ -1,7 +1,7 @@
 DeferredShading
 ===============
 
-A DX11 Tiled Deferred Shading Renderer in Unity3D
+A DX11 Tiled Deferred Shading Renderer in Unity
 
 ![alt tag](http://i.imgur.com/wRq9ccI.png)
 
