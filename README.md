@@ -1,7 +1,7 @@
 DeferredShading
 ===============
 
-NOTE: This project never took off and will only remain for educational purposes. It is not Tiled nor does it use DX11 features. This was intended features that I never had the time to complete. This project was made 4yrs ago using Unity 4 APIs
+NOTE: This project never took off and will only remain for educational purposes. It is not Tiled nor does it use DX11 features. This was intended features that I never had the time to complete. This project was made many years ago using Unity 4 APIs
 
 A DX11 Tiled Deferred Shading Renderer in Unity
 
